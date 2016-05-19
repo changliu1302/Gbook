@@ -1,0 +1,71 @@
+//
+//  LoginViewController.swift
+//  GBook
+//
+//  Created by Fangyu.wu on 16/4/15.
+//  Copyright © 2016年 fangyu.wu. All rights reserved.
+//
+
+import UIKit
+
+class LoginViewController: UIViewController {
+
+    @IBOutlet weak var topLayout: NSLayoutConstraint!
+    @IBOutlet weak var password: UITextField!
+    @IBOutlet weak var username: UITextField!
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        XKeyBoard.registerKeyBoardHide(self)
+        XKeyBoard.registerKeyBoardShow(self)
+    }
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    @IBAction func login(sender: AnyObject) {
+        AVUser.logInWithUsernameInBackground(self.username.text, password: self.password.text) { (user, error) -> Void in
+            if error == nil {
+                self.dismissViewControllerAnimated(true, completion: { () -> Void in
+                    
+                })
+            }else{
+                if error.code == 210{
+                    ProgressHUD.showError("The account or password is wrong")
+                }else if error.code == 211 {
+                    ProgressHUD.showError("The user is not existed")
+                }else if error.code == 216 {
+                    ProgressHUD.showError("The e-mail address is not confirmed")
+                }else if error.code == 1{
+                    ProgressHUD.showError("Your opreation is too frequent")
+                }else{
+                    ProgressHUD.showError("Fail to log in")
+                }
+            }
+        }
+        
+        
+    }
+    /**
+    *  注册键盘出现和消失
+    */
+    func keyboardWillHideNotification(notification:NSNotification){
+        UIView.animateWithDuration(0.3) { () -> Void in
+            self.topLayout.constant = 8
+            self.view.layoutIfNeeded()
+        }
+    
+    }
+    func keyboardWillShowNotification(notification:NSNotification){
+         UIView.animateWithDuration(0.3) { () -> Void in
+            self.topLayout.constant = -200
+            self.view.layoutIfNeeded()
+        }
+    }
+
+}
+
+
+
+
+
