@@ -1,0 +1,318 @@
+//
+//  Push_TypeController.swift
+//  GBook
+
+//  Created by fangyu.wu on 16/4/27.
+//  Copyright © 2016年 fangyu.wu. All rights reserved.
+//
+
+import UIKit
+
+typealias Push_TypeControllerBlock = (type:String,detailType:String)->Void
+
+class Push_TypeController: UIViewController,IGLDropDownMenuDelegate{
+    
+    var segmentController1:AKSegmentedControl?
+    var segmentController2:AKSegmentedControl?
+    
+    
+    var literatureArray1:Array<NSDictionary> = []
+    var literatureArray2:Array<NSDictionary> = []
+    
+    
+    var humanitiesArray1:Array<NSDictionary> = []
+    var humanitiesArray2:Array<NSDictionary> = []
+    
+    
+    var livelihoodArray1:Array<NSDictionary> = []
+    var livelihoodArray2:Array<NSDictionary> = []
+    
+    
+    var economiesArray1:Array<NSDictionary> = []
+    var economiesArray2:Array<NSDictionary> = []
+    
+    
+    var technologyArray1:Array<NSDictionary> = []
+    var technologyArray2:Array<NSDictionary> = []
+    
+    var NetworkArray1:Array<NSDictionary> = []
+    var NetworkArray2:Array<NSDictionary> = []
+    
+    var dropDownMenu1:IGLDropDownMenu?
+    var dropDownMenu2:IGLDropDownMenu?
+    
+    var type = "Literature"
+    var detailType = "Literature"
+    var callBack:Push_TypeControllerBlock?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.view.backgroundColor = RGB(231, g: 231, b: 231)
+        
+        let segmentLabel = UILabel(frame: CGRectMake((SCREEN_WIDTH - 300)/2,20,300,20))
+        segmentLabel.font = UIFont(name: MY_FONT, size: 17)
+        segmentLabel.text = "Please choose the type"
+        segmentLabel.shadowOffset = CGSizeMake(0, 1)
+        segmentLabel.shadowColor = UIColor.whiteColor()
+        segmentLabel.textColor = RGB(82, g: 113, b: 131)
+        segmentLabel.textAlignment = .Center
+        self.view.addSubview(segmentLabel)
+        
+        
+        self.initSegment()
+        
+        self.initDropArray()
+        
+        self.createDropMenu(self.literatureArray1, array2: self.literatureArray2)
+        
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    func sure(){
+        
+        self.callBack!(type:self.type,detailType: self.detailType)
+        self.dismissViewControllerAnimated(true) { () -> Void in
+            
+        }
+        
+    }
+    func close(){
+        self.dismissViewControllerAnimated(true) { () -> Void in
+            
+        }
+    }
+    /**
+     init Array
+     */
+    func initDropArray(){
+        
+        self.literatureArray1 = [
+            ["title":"Literature"],
+            ["title":"Cartoon"],
+            ["title":"Youth Literature "],
+            ["title":"Essay"],
+            ["title":"Poems"],
+            ["title":"Drama"],
+        ];
+        self.literatureArray2 = [
+            ["title":"Biography"],
+            ["title":"Classical Chinese Poetry"],
+            ["title":"Foreign Poetry"],
+            ["title":"Arts"],
+            ["title":"Photography"],
+        ];
+        self.humanitiesArray1 = [
+            ["title":"History"],
+            ["title":"Culture"],
+            ["title":"Ancient Book"],
+            ["title":"Psychology"],
+            ["title":"Philosophy / Religion"],
+            ["title":"Political / Military"],
+        ];
+        self.humanitiesArray2 = [
+            ["title":"Social Sciences"],
+            ["title":"Law"],
+        ];
+        self.livelihoodArray1 = [
+            ["title":"Entertainment/Hobby"],
+            ["title":"Pregnancy/Antenatal training"],
+            ["title":"Cooking/Food"],
+            ["title":"Fashion/Beauty"],
+            ["title":"Travel/Map"],
+            ["title":"Household/Home furnishing"],
+        ];
+        self.livelihoodArray2 = [
+            ["title":"Parent/Family eduction"],
+            ["title":"Sexual relation"],
+            ["title":"Child rearing/Parenting"],
+            ["title":"Health care"],
+            ["title":"Sports"],
+            ["title":"Handwork/DIY"],
+        ];
+        self.economiesArray1  = [
+            ["title":"Management"],
+            ["title":"Investment"],
+            ["title":"Financial management"],
+            ["title":"Economy"],
+        ];
+        self.economiesArray2  = [
+            ["title":"Have no more type"],
+        ];
+        self.technologyArray1 =  [
+            ["title":"popular science readings"],
+            ["title":"Architecture"],
+            ["title":"Medical science"],
+            ["title":"Computer/Network"],
+        ];
+        self.technologyArray2 = [
+            ["title":"Agriculture/Forestry"],
+            ["title":"Natural science"],
+            ["title":"Industrial technology"],
+        ];
+        self.NetworkArray1 =    [
+            ["title":"Fantasy"],
+            ["title":"Kung fu Novels/Supernatural fiction"],
+            ["title":"Urban novels"],
+            ["title":"History/Military"],
+        ];
+        self.NetworkArray2 =    [
+            ["title":"Game"],
+            ["title":"Science fiction"],
+            ["title":"Love story"],
+        ];
+        
+        
+        
+        
+        
+    }
+    
+    /**
+     *  初始化segment
+     */
+    func initSegment(){
+        let buttonArray1 = [
+            ["image":"ledger","title":"Literature","font":MY_FONT],
+            ["image":"drama masks","title":"Social","font":MY_FONT],
+            ["image":"aperture","title":"Life","font":MY_FONT],
+        ]
+        self.segmentController1 = AKSegmentedControl(frame: CGRectMake(10,60,SCREEN_WIDTH-20,37))
+        self.segmentController1?.initButtonWithTitleandImage(buttonArray1)
+        self.view.addSubview(self.segmentController1!)
+        
+        let buttonArray2 = [
+            ["image":"atom","title":"Management","font":MY_FONT],
+            ["image":"alien","title":"Technology","font":MY_FONT],
+            ["image":"fire element","title":"Popular","font":MY_FONT],
+        ]
+        self.segmentController2 = AKSegmentedControl(frame: CGRectMake(10,110,SCREEN_WIDTH-20,37))
+        self.segmentController2?.initButtonWithTitleandImage(buttonArray2)
+        self.view.addSubview(self.segmentController2!)
+        
+        
+        self.segmentController1?.addTarget(self, action: Selector("segmentControllerAction:"), forControlEvents: .ValueChanged)
+        self.segmentController2?.addTarget(self, action: Selector("segmentControllerAction:"), forControlEvents: .ValueChanged)
+        
+    }
+    /**
+     *  segment的点击动作
+     */
+    func segmentControllerAction(segment:AKSegmentedControl){
+        var index = segment.selectedIndexes.firstIndex
+        
+        self.type = ((segment.buttonsArray[index] as? UIButton)?.currentTitle)!
+        
+        if segment == self.segmentController1{
+            self.segmentController2?.setSelectedIndex(3)
+        }else{
+            self.segmentController1?.setSelectedIndex(3)
+            index += 3
+        }
+        
+        if self.dropDownMenu1 != nil {
+            self.dropDownMenu1?.resetParams()
+        }
+        if self.dropDownMenu2 != nil {
+            self.dropDownMenu2?.resetParams()
+        }
+        
+        switch (index){
+        case 0:
+            self.createDropMenu(self.literatureArray1, array2: self.literatureArray2)
+            break
+        case 1:
+            self.createDropMenu(self.humanitiesArray1, array2: self.humanitiesArray2)
+            break
+        case 2:
+            self.createDropMenu(self.livelihoodArray1, array2: self.livelihoodArray2)
+            break
+        case 3:
+            self.createDropMenu(self.economiesArray1, array2: self.economiesArray2)
+            break
+        case 4:
+            self.createDropMenu(self.technologyArray1, array2: self.technologyArray2)
+            break
+        case 5:
+            self.createDropMenu(self.NetworkArray1, array2: self.NetworkArray2)
+            break
+        default:
+            break
+            
+        }
+        
+    }
+    /**
+     *  初始化dropDownMenu
+     */
+    func createDropMenu(array1:Array<NSDictionary>,array2:Array<NSDictionary>){
+        let dropDownItem1 = NSMutableArray()
+        for var i = 0;i<array1.count;i++ {
+            let dict = array1[i]
+            let item = IGLDropDownItem()
+            item.text = dict["title"] as? String
+            dropDownItem1.addObject(item)
+        }
+        
+        let dropDownItem2 = NSMutableArray()
+        for var i = 0;i<array2.count;i++ {
+            let dict = array2[i]
+            let item = IGLDropDownItem()
+            item.text = dict["title"] as? String
+            dropDownItem2.addObject(item)
+        }
+        
+        self.dropDownMenu1?.removeFromSuperview()
+        self.dropDownMenu1 = IGLDropDownMenu()
+        self.dropDownMenu1?.menuText = "Point me, show the detail list"
+        self.dropDownMenu1?.menuButton.textLabel.adjustsFontSizeToFitWidth = true
+        self.dropDownMenu1?.menuButton.textLabel.textColor = RGB(38, g: 82, b: 67)
+        self.dropDownMenu1?.paddingLeft = 15
+        self.dropDownMenu1?.delegate = self
+        self.dropDownMenu1?.type = .Stack
+        self.dropDownMenu1?.itemAnimationDelay = 0.1
+        self.dropDownMenu1?.gutterY = 5
+        self.dropDownMenu1?.dropDownItems = dropDownItem1 as [AnyObject]
+        self.dropDownMenu1?.frame = CGRectMake(20, 150, SCREEN_WIDTH/2-30, (SCREEN_HEIGHT-200)/7)
+        self.view.addSubview(self.dropDownMenu1!)
+        self.dropDownMenu1?.reloadView()
+        
+        
+        self.dropDownMenu2?.removeFromSuperview()
+        self.dropDownMenu2 = IGLDropDownMenu()
+        self.dropDownMenu2?.menuText = "Point me, show the detail list"
+        self.dropDownMenu2?.menuButton.textLabel.adjustsFontSizeToFitWidth = true
+        self.dropDownMenu2?.menuButton.textLabel.textColor = RGB(38, g: 82, b: 67)
+        self.dropDownMenu2?.paddingLeft = 15
+        self.dropDownMenu2?.delegate = self
+        self.dropDownMenu2?.type = .Stack
+        self.dropDownMenu2?.itemAnimationDelay = 0.1
+        self.dropDownMenu2?.gutterY = 5
+        self.dropDownMenu2?.dropDownItems = dropDownItem2 as [AnyObject]
+        self.dropDownMenu2?.frame = CGRectMake(SCREEN_WIDTH/2+10, 150, SCREEN_WIDTH/2-30, (SCREEN_HEIGHT-200)/7)
+        self.view.addSubview(self.dropDownMenu2!)
+        self.dropDownMenu2?.reloadView()
+        
+    }
+    /**
+     *  IGLDropDownMenuDelegate
+     */
+    func dropDownMenu(dropDownMenu: IGLDropDownMenu!, selectedItemAtIndex index: Int) {
+        if dropDownMenu == self.dropDownMenu1 {
+            let item = self.dropDownMenu1?.dropDownItems[index] as? IGLDropDownItem
+            self.detailType = (item?.text)!
+            self.dropDownMenu2?.menuButton.text = self.detailType
+        }else{
+            let item = self.dropDownMenu2?.dropDownItems[index] as? IGLDropDownItem
+            self.detailType = (item?.text)!
+            self.dropDownMenu1?.menuButton.text = self.detailType
+        }
+    }
+    
+    
+}
+
+
